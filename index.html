@@ -1,0 +1,1262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMSARA | Recycle • Earn • Print</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --gold: #d4a017;
+      --gold-light: #fff7df;
+      --navy: #102a43;
+      --blue: #1f4e79;
+      --background: #f5f7fa;
+      --white: #ffffff;
+      --text: #263747;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --green: #218838;
+      --red: #c0392b;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 245px;
+      min-width: 245px;
+      background: var(--navy);
+      color: white;
+      padding: 27px 17px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 5px 12px 25px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      margin-bottom: 25px;
+    }
+
+    .brand-name {
+      color: var(--gold);
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .brand-tagline {
+      color: #e2e8f0;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-top: 8px;
+    }
+
+    .nav-label {
+      color: #9fb3c8;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      padding: 0 12px;
+      margin-bottom: 12px;
+    }
+
+    .nav-button {
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #d9e2ec;
+      text-align: left;
+      padding: 13px 12px;
+      border-radius: 7px;
+      font-size: 13px;
+      margin-bottom: 5px;
+      transition: background .2s;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 18px 12px 0;
+      color: #9fb3c8;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    /* MAIN CONTENT */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+      color: var(--navy);
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .topbar p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .student-chip {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 25px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 19px;
+      color: var(--navy);
+      margin-bottom: 15px;
+    }
+
+    /* DASHBOARD BANNER */
+
+    .hero {
+      background: linear-gradient(115deg, #102a43, #1f4e79);
+      color: white;
+      padding: 36px;
+      border-radius: 14px;
+      margin-bottom: 25px;
+    }
+
+    .hero-kicker {
+      color: #f1cb62;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 13px;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px, 3vw, 36px);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .hero h2 span {
+      color: #f1cb62;
+    }
+
+    .hero p {
+      color: #e2eaf2;
+      font-size: 13px;
+      line-height: 1.8;
+      max-width: 570px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+
+    .btn {
+      border: none;
+      padding: 12px 17px;
+      border-radius: 7px;
+      font-weight: bold;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #172b4d;
+    }
+
+    .btn-gold:hover {
+      background: #e6b52b;
+    }
+
+    .btn-light {
+      background: white;
+      color: var(--navy);
+    }
+
+    .btn-light:hover {
+      background: #edf2f7;
+    }
+
+    .btn-secondary {
+      background: #edf2f7;
+      color: var(--navy);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    /* FOUR PRINTING STEPS */
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 13px;
+      margin-bottom: 28px;
+    }
+
+    .step-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 19px 15px;
+    }
+
+    .step-number {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      color: #805f00;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 13px;
+    }
+
+    .step-card h3 {
+      color: var(--navy);
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .step-card p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* DASHBOARD SUMMARY */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 21px;
+    }
+
+    .gold-card {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .card-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .gold-card .card-label,
+    .gold-card .card-value,
+    .gold-card .card-note {
+      color: #172b4d;
+    }
+
+    .card-value {
+      color: var(--navy);
+      font-size: 29px;
+      font-weight: bold;
+    }
+
+    .card-note {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 23px;
+      margin-bottom: 20px;
+    }
+
+    .panel h3 {
+      font-size: 16px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .panel-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .shortcut {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      background: #fafbfd;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 18px;
+    }
+
+    .shortcut h3 {
+      margin-bottom: 6px;
+    }
+
+    .shortcut p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* FORM */
+
+    .form-group {
+      margin-bottom: 17px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 7px;
+      background: white;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    input:focus {
+      outline: 2px solid rgba(212,160,23,.25);
+      border-color: var(--gold);
+    }
+
+    input[type="file"] {
+      background: #fafbfd;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 16px 0;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .preview-box {
+      display: none;
+      border: 1px solid var(--border);
+      background: #fafbfd;
+      padding: 18px;
+      border-radius: 9px;
+      margin: 18px 0;
+    }
+
+    .preview-box.visible {
+      display: block;
+    }
+
+    .preview-box h4 {
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .preview-box canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      max-height: 500px;
+      margin: 15px auto;
+      border: 1px solid var(--border);
+      background: white;
+    }
+
+    .preview-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .status-message {
+      display: none;
+      padding: 13px;
+      border-radius: 7px;
+      margin: 15px 0;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .status-message.visible {
+      display: block;
+    }
+
+    .status-message.success {
+      background: #e6f4ea;
+      color: #176b35;
+    }
+
+    .status-message.error {
+      background: #fdecea;
+      color: #a12622;
+    }
+
+    .status-message.info {
+      background: #e8f1fb;
+      color: #174a7e;
+    }
+
+    /* HISTORY TABLE */
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th {
+      text-align: left;
+      padding: 13px 10px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .positive {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .negative {
+      color: var(--red);
+      font-weight: bold;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: bold;
+      background: #e6f4ea;
+      color: #176b35;
+    }
+
+    .empty-state {
+      padding: 28px 12px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .demo-warning {
+      background: #fff7df;
+      border: 1px solid #f2d675;
+      color: #73580a;
+      padding: 12px 14px;
+      border-radius: 7px;
+      font-size: 11px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+      padding: 20px 0;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 1000px) {
+      .steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-width: 0;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 14px;
+        margin-bottom: 15px;
+      }
+
+      .brand-name {
+        font-size: 25px;
+      }
+
+      .nav-label,
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .nav-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+
+      .nav-button {
+        margin: 0;
+        padding: 11px;
+        font-size: 12px;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .hero {
+        padding: 25px;
+      }
+
+      .cards,
+      .steps,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .shortcut {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .card-value {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-name">SAMSARA</div>
+      <div class="brand-tagline">Recycle • Earn • Print</div>
+    </div>
+
+    <div class="nav-label">MAIN MENU</div>
+
+    <nav class="nav-menu">
+      <button class="nav-button active" data-page="dashboard">Dashboard</button>
+      <button class="nav-button" data-page="print">Start Printing</button>
+      <button class="nav-button" data-page="history">Transaction History</button>
+      <button class="nav-button" data-page="account">My Account</button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <strong>SAMSARA</strong><br>
+      Recycle responsibly.<br>
+      Earn credits. Print smarter.
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">A more sustainable school starts with you.</p>
+      </div>
+      <div class="student-chip">
+        Student ID: <span id="studentIdDisplay">STU-001</span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="dashboard">
+
+      <div class="hero">
+        <div class="hero-kicker">A More Sustainable School</div>
+        <h2>Recycle Today,<br><span>Print Tomorrow.</span></h2>
+        <p>
+          SAMSARA rewards responsible recycling with printing credits for school needs.
+          Turn recyclable materials into useful credits and help create a cleaner campus.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-gold" data-goto="print">Start Printing</button>
+          <button class="btn btn-light" data-goto="history">View Transactions</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">How to Use SAMSARA</h2>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Tap Your RFID</h3>
+          <p>Tap your registered RFID card at the printing station first.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Click Start Printing</h3>
+          <p>Open the printing page to begin your print request.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Upload Your File</h3>
+          <p>Upload your PDF document and preview it before printing.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Print Your Document</h3>
+          <p>Check your required credits and print if your balance is sufficient.</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">Your Overview</h2>
+
+      <div class="cards">
+        <div class="card gold-card">
+          <div class="card-label">Available Printing Credits</div>
+          <div class="card-value" id="dashboardCredits">20</div>
+          <div class="card-note">1 credit per page per copy</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Pages Printed</div>
+          <div class="card-value" id="dashboardPrinted">0</div>
+          <div class="card-note">Total pages in recorded demo transactions</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Recycling Transactions</div>
+          <div class="card-value" id="dashboardRecycling">0</div>
+          <div class="card-note">Recycling station connection is not yet active</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="shortcut">
+          <div>
+            <h3>Ready to print?</h3>
+            <p>Upload a PDF, review your pages, and check the credits needed.</p>
+          </div>
+          <button class="btn btn-primary" data-goto="print">Start Printing</button>
+        </div>
+      </div>
+
+      <div class="demo-warning">
+        <strong>Prototype notice:</strong> This version uses sample account data saved in your browser. Actual RFID reading, shared credit balances between machines, and physical printing require backend and hardware integration. HI,GUYS.
+      </div>
+    </section>
+
+    <!-- PRINTING PAGE -->
+    <section class="page" id="print">
+
+      <div class="panel">
+        <h3>Print a Document</h3>
+        <p class="panel-description">
+          Upload your PDF and review the credit cost before submitting your request.
+        </p>
+
+        <div class="form-group">
+          <label for="pdfFile">Select PDF File</label>
+          <input type="file" id="pdfFile" accept="application/pdf,.pdf">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="copies">Number of Copies</label>
+            <input type="number" id="copies" min="1" max="100" value="1">
+          </div>
+
+          <div class="form-group">
+            <label for="printMode">Printing Mode</label>
+            <input id="printMode" type="text" value="Black and White" readonly>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>Credit rate:</strong> 1 credit per page per copy.<br>
+          <strong>Example:</strong> 5 pages × 2 copies = 10 credits.
+        </div>
+
+        <button class="btn btn-primary" id="previewButton">Upload and Preview PDF</button>
+
+        <div class="preview-box" id="previewBox">
+          <h4>Document Preview</h4>
+          <p id="pdfInfo" class="panel-description"></p>
+          <canvas id="pdfCanvas"></canvas>
+
+          <div class="preview-controls">
+            <button class="btn btn-secondary" id="previousPage">Previous</button>
+            <span id="pageIndicator">Page 1 of 1</span>
+            <button class="btn btn-secondary" id="nextPage">Next</button>
+          </div>
+        </div>
+
+        <div class="info-box" id="costBox" style="display:none;">
+          <strong>Pages in document:</strong> <span id="pageCount">0</span><br>
+          <strong>Copies:</strong> <span id="copyCount">1</span><br>
+          <strong>Total pages:</strong> <span id="totalPageCount">0</span><br>
+          <strong>Required credits:</strong> <span id="requiredCredits">0</span><br>
+          <strong>Available credits:</strong> <span id="availableCredits">0</span><br>
+          <strong>Remaining credits:</strong> <span id="remainingCredits">0</span>
+        </div>
+
+        <div class="status-message" id="printMessage"></div>
+        <button class="btn btn-gold" id="submitPrint" disabled>Print Document</button>
+      </div>
+    </section>
+
+    <!-- TRANSACTION HISTORY -->
+    <section class="page" id="history">
+      <div class="panel">
+        <h3>Transaction History</h3>
+        <p class="panel-description">Review printing transactions saved in this browser's demo account.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Transaction</th>
+                <th>Details</th>
+                <th>Credits</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNT -->
+    <section class="page" id="account">
+      <div class="panel">
+        <h3>My Account</h3>
+        <p class="panel-description">View your sample student account details.</p>
+
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" value="Sample Student">
+        </div>
+
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <input type="text" id="studentId" value="STU-001">
+        </div>
+
+        <div class="form-group">
+          <label for="rfidNumber">RFID Card ID</label>
+          <input type="text" id="rfidNumber" value="DEMO-RFID-001" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="accountCredits">Available Printing Credits</label>
+          <input type="text" id="accountCredits" value="20" readonly>
+        </div>
+
+        <button class="btn btn-primary" id="saveAccount">Save Demo Profile</button>
+        <div class="status-message" id="accountMessage"></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      SAMSARA — Recycle • Earn • Print<br>
+      Student Printing-Credit System Prototype
+    </footer>
+  </main>
+</div>
+
+<script>
+  /*
+    DEMO ONLY:
+    This frontend does not yet connect to physical RFID hardware,
+    a shared backend, or the physical printer. Hi,guys!
+  */
+
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  const DEFAULT_ACCOUNT = {
+    name: "Sample Student",
+    studentId: "Dela Rosa",
+    rfid: "DEMO-RFID-001",
+    credits: 20
+  };
+  
+
+  function loadAccount() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("samsaraAccount"));
+      return saved ? { ...DEFAULT_ACCOUNT, ...saved } : { ...DEFAULT_ACCOUNT };
+    } catch {
+      return { ...DEFAULT_ACCOUNT };
+    }
+  }
+
+  function loadTransactions() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("samsaraTransactions"));
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  let account = loadAccount();
+  let transactions = loadTransactions();
+  let pdfDocument = null;
+  let currentPdfPage = 1;
+  let pdfPageCount = 0;
+  let currentFileName = "";
+
+  const pageTitles = {
+    dashboard: ["Dashboard", "A more sustainable school starts with you."],
+    print: ["Start Printing", "Upload and preview your document before printing."],
+    history: ["Transaction History", "Review your recorded transactions."],
+    account: ["My Account", "View your sample student account."]
+  };
+
+  function saveData() {
+    localStorage.setItem("samsaraAccount", JSON.stringify(account));
+    localStorage.setItem("samsaraTransactions", JSON.stringify(transactions));
+  }
+
+  function navigateTo(pageName) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.toggle("active", page.id === pageName);
+    });
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+      button.classList.toggle("active", button.dataset.page === pageName);
+    });
+
+    const title = pageTitles[pageName] || pageTitles.dashboard;
+    document.getElementById("pageTitle").textContent = title[0];
+    document.getElementById("pageSubtitle").textContent = title[1];
+
+    if (pageName === "history") renderHistory();
+    if (pageName === "account") renderAccount();
+    if (pageName === "dashboard") renderDashboard();
+  }
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => navigateTo(button.dataset.page));
+  });
+
+  document.querySelectorAll("[data-goto]").forEach(button => {
+    button.addEventListener("click", () => navigateTo(button.dataset.goto));
+  });
+
+  function renderDashboard() {
+    document.getElementById("studentIdDisplay").textContent = account.studentId;
+    document.getElementById("dashboardCredits").textContent = account.credits;
+
+    const printed = transactions
+      .filter(t => t.type === "Printing")
+      .reduce((sum, t) => sum + (Number(t.pages) || 0), 0);
+
+    const recycling = transactions.filter(t => t.type === "Recycling").length;
+
+    document.getElementById("dashboardPrinted").textContent = printed;
+    document.getElementById("dashboardRecycling").textContent = recycling;
+  }
+
+  function renderHistory() {
+    const tbody = document.getElementById("historyBody");
+    tbody.innerHTML = "";
+
+    if (transactions.length === 0) {
+      tbody.innerHTML =
+        '<tr><td colspan="5" class="empty-state">No transactions recorded yet.</td></tr>';
+      return;
+    }
+
+    [...transactions].reverse().forEach(transaction => {
+      const row = document.createElement("tr");
+      const values = [
+        transaction.date,
+        transaction.type,
+        transaction.details,
+        (transaction.type === "Printing" ? "-" : "+") + transaction.credits,
+        transaction.status || "Demo Recorded"
+      ];
+
+      values.forEach((value, index) => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+
+        if (index === 3) {
+          cell.className = transaction.type === "Printing" ? "negative" : "positive";
+        }
+
+        if (index === 4) {
+          const pill = document.createElement("span");
+          pill.className = "pill";
+          pill.textContent = value;
+          cell.textContent = "";
+          cell.appendChild(pill);
+        }
+
+        row.appendChild(cell);
+      });
+
+      tbody.appendChild(row);
+    });
+  }
+
+  function renderAccount() {
+    document.getElementById("studentName").value = account.name;
+    document.getElementById("studentId").value = account.studentId;
+    document.getElementById("rfidNumber").value = account.rfid;
+    document.getElementById("accountCredits").value = account.credits;
+  }
+
+  function showMessage(id, message, type) {
+    const element = document.getElementById(id);
+    element.textContent = message;
+    element.className = "status-message visible " + type;
+  }
+
+  function clearPrintMessage() {
+    const element = document.getElementById("printMessage");
+    element.textContent = "";
+    element.className = "status-message";
+  }
+
+  document.getElementById("saveAccount").addEventListener("click", () => {
+    const name = document.getElementById("studentName").value.trim();
+    const studentId = document.getElementById("studentId").value.trim();
+
+    if (!name || !studentId) {
+      showMessage("accountMessage", "Enter a student name and student ID.", "error");
+      return;
+    }
+
+    account.name = name;
+    account.studentId = studentId;
+    saveData();
+    renderDashboard();
+    showMessage("accountMessage", "Demo profile saved in this browser.", "success");
+  });
+
+  document.getElementById("pdfFile").addEventListener("change", () => {
+    pdfDocument = null;
+    pdfPageCount = 0;
+    currentPdfPage = 1;
+    currentFileName = "";
+
+    document.getElementById("previewBox").classList.remove("visible");
+    document.getElementById("costBox").style.display = "none";
+    document.getElementById("submitPrint").disabled = true;
+    clearPrintMessage();
+  });
+
+  document.getElementById("previewButton").addEventListener("click", async () => {
+    clearPrintMessage();
+
+    const file = document.getElementById("pdfFile").files[0];
+
+    if (!file) {
+      showMessage("printMessage", "Please select a PDF file first.", "error");
+      return;
+    }
+
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      showMessage("printMessage", "Please select a valid PDF document.", "error");
+      return;
+    }
+
+    if (!window.pdfjsLib) {
+      showMessage("printMessage", "PDF preview could not load. Check your internet connection and reload the page.", "error");
+      return;
+    }
+
+    try {
+      const buffer = await file.arrayBuffer();
+      pdfDocument = await pdfjsLib.getDocument({ data: buffer }).promise;
+      pdfPageCount = pdfDocument.numPages;
+      currentPdfPage = 1;
+      currentFileName = file.name;
+
+      document.getElementById("pdfInfo").textContent =
+        file.name + " — " + pdfPageCount + " page(s)";
+
+      document.getElementById("previewBox").classList.add("visible");
+      updatePageCosts();
+      await renderPdfPage(currentPdfPage);
+
+      document.getElementById("submitPrint").disabled = false;
+      showMessage("printMessage", "Document uploaded. Check the preview and required credits before printing.", "success");
+    } catch {
+      pdfDocument = null;
+      showMessage("printMessage", "The PDF could not be opened. Please try another file.", "error");
+    }
+  });
+
+  async function renderPdfPage(pageNumber) {
+    if (!pdfDocument) return;
+
+    const page = await pdfDocument.getPage(pageNumber);
+    const canvas = document.getElementById("pdfCanvas");
+    const context = canvas.getContext("2d");
+    const viewport = page.getViewport({ scale: 1.2 });
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({
+      canvasContext: context,
+      viewport
+    }).promise;
+
+    document.getElementById("pageIndicator").textContent =
+      "Page " + pageNumber + " of " + pdfPageCount;
+
+    document.getElementById("previousPage").disabled = pageNumber <= 1;
+    document.getElementById("nextPage").disabled = pageNumber >= pdfPageCount;
+  }
+
+  document.getElementById("previousPage").addEventListener("click", async () => {
+    if (pdfDocument && currentPdfPage > 1) {
+      currentPdfPage--;
+      await renderPdfPage(currentPdfPage);
+    }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", async () => {
+    if (pdfDocument && currentPdfPage < pdfPageCount) {
+      currentPdfPage++;
+      await renderPdfPage(currentPdfPage);
+    }
+  });
+
+  document.getElementById("copies").addEventListener("input", () => {
+    updatePageCosts();
+    clearPrintMessage();
+  });
+
+  function updatePageCosts() {
+    const input = document.getElementById("copies");
+    let copies = Number.parseInt(input.value, 10);
+
+    if (!Number.isFinite(copies) || copies < 1) copies = 1;
+    if (copies > 100) copies = 100;
+
+    input.value = copies;
+
+    const totalPages = pdfPageCount * copies;
+    const required = totalPages;
+
+    document.getElementById("pageCount").textContent = pdfPageCount;
+    document.getElementById("copyCount").textContent = copies;
+    document.getElementById("totalPageCount").textContent = totalPages;
+    document.getElementById("requiredCredits").textContent = required;
+    document.getElementById("availableCredits").textContent = account.credits;
+    document.getElementById("remainingCredits").textContent =
+      Math.max(0, account.credits - required);
+
+    document.getElementById("costBox").style.display =
+      pdfPageCount > 0 ? "block" : "none";
+  }
+
+  document.getElementById("submitPrint").addEventListener("click", () => {
+    if (!pdfDocument || pdfPageCount < 1) {
+      showMessage("printMessage", "Please upload and preview a PDF first.", "error");
+      return;
+    }
+
+    const copies = Number.parseInt(document.getElementById("copies").value, 10) || 1;
+    const totalPages = pdfPageCount * copies;
+    const requiredCredits = totalPages;
+
+    if (requiredCredits > account.credits) {
+      showMessage(
+        "printMessage",
+        "Insufficient credits. Available: " + account.credits +
+        ". Required: " + requiredCredits + ".",
+        "error"
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Confirm this DEMO print request?\n\n" +
+      "File: " + currentFileName +
+      "\nPages per copy: " + pdfPageCount +
+      "\nCopies: " + copies +
+      "\nTotal pages: " + totalPages +
+      "\nCredits required: " + requiredCredits +
+      "\n\nThis prototype will update the demo balance only. It will not print to a physical printer."
+    );
+
+    if (!confirmed) return;
+
+    account.credits -= requiredCredits;
+
+    transactions.push({
+      date: new Date().toLocaleString(),
+      type: "Printing",
+      details: currentFileName + " (" + pdfPageCount + " pages x " + copies + " copies)",
+      pages: totalPages,
+      credits: requiredCredits,
+      status: "Demo Recorded"
+    });
+
+    saveData();
+    renderDashboard();
+    updatePageCosts();
+
+    showMessage(
+      "printMessage",
+      "Demo request recorded. Credits were deducted from the sample balance. No physical printing occurred.",
+      "success"
+    );
+  });
+
+   renderDashboard();
+  renderHistory();
+  renderAccount();
+</script>
+
+<script type="module">
+  import { db, doc, getDoc } from "./firebase.js";
+
+  try {
+    const testDoc = await getDoc(doc(db, "students", "STU001"));
+
+    if (testDoc.exists()) {
+      console.log("SAMSARA database connected!");
+      console.log("Student record:", testDoc.data());
+    } else {
+      console.log("Connected, but STU001 was not found.");
+    }
+  } catch (error) {
+    console.error("Database test failed:", error.code, error.message);
+  }
+</script>
+
+</body>
+</html>
+ 
