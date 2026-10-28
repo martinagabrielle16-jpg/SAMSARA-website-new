@@ -1244,7 +1244,7 @@
   import { db, doc, getDoc } from "./firebase.js";
 
   try {
-    const testDoc = await getDoc(doc(db, "students", "STU001"));
+    const testDoc = await getDoc(doc(db, "students", "STU01"));
 
     if (testDoc.exists()) {
       console.log("SAMSARA database connected!");
