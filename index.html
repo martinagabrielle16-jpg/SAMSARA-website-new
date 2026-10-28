@@ -1257,6 +1257,50 @@
   }
 </script>
 
+<script type="module">
+  import {
+    auth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "./firebase.js";
+
+  console.log("SAMSARA Firebase Authentication loaded.");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Firebase user signed in:", user.email);
+    } else {
+      console.log("No user is signed in yet.");
+    }
+  });
+
+  // Test sign-in using the browser prompts.
+  // Remove this test after confirming sign-in works.
+  const testLogin = confirm(
+    "Would you like to test your SAMSARA Firebase login?"
+  );
+
+  if (testLogin) {
+    const email = prompt("Enter your test account email:");
+    const password = prompt("Enter your test account password:");
+
+    if (email && password) {
+      try {
+        const result = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        console.log("SAMSARA login successful:", result.user.email);
+        alert("Firebase login successful!");
+      } catch (error) {
+        console.error("SAMSARA login failed:", error.code, error.message);
+        alert("Login failed. Check the Console for the error code.");
+      }
+    }
+  }
+</script>
+
 </body>
 </html>
  
