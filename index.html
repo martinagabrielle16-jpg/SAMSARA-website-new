@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -186,7 +185,7 @@ button:disabled {
 }
 
 .hero-kicker {
-    color: var(--brown, #9b8064);
+    color: #9b8064;
     text-transform: uppercase;
     letter-spacing: 1.7px;
     font-size: 10px;
@@ -416,6 +415,10 @@ input:focus {
 }
 
 input[type="file"] {
+    background: var(--cream);
+}
+
+input[readonly] {
     background: var(--cream);
 }
 
@@ -781,7 +784,7 @@ td {
         <strong>Prototype notice:</strong>
         Physical printing and PDF uploads require the SAMSARA backend
         to be running on the same computer during this local test.
-        This test version does not deduct credits.
+        This test version checks credits but does not deduct them.
     </div>
 
 </section>
@@ -935,7 +938,7 @@ td {
 
         <div class="form-group">
             <label for="studentId">Student ID</label>
-            <input type="text" id="studentId" value="STU01">
+            <input type="text" id="studentId" value="STU01" readonly>
         </div>
 
         <div class="form-group">
@@ -981,9 +984,6 @@ if (window.pdfjsLib) {
    2. SERVER CONFIGURATION
 ================================== */
 
-// Local testing only.
-// This address refers to the computer running Node.js.
-
 const API_BASE_URL = "http://127.0.0.1:3000";
 
 /* ==================================
@@ -1003,9 +1003,13 @@ function loadAccount() {
             localStorage.getItem("samsaraAccount")
         );
 
-        return saved
-            ? { ...DEFAULT_ACCOUNT, ...saved }
-            : { ...DEFAULT_ACCOUNT };
+        return {
+            ...DEFAULT_ACCOUNT,
+            ...(saved || {}),
+            // Use the registered test account ID.
+            // This prevents an old browser profile from changing it.
+            studentId: "STU01"
+        };
 
     } catch {
         return { ...DEFAULT_ACCOUNT };
@@ -1026,8 +1030,6 @@ function loadTransactions() {
 }
 
 let account = loadAccount();
-    alert("Student ID: " + account.studentId);
-    console.log("SAMSARA Student ID:", account.studentId);
 let transactions = loadTransactions();
 
 let pdfDocument = null;
@@ -1073,7 +1075,14 @@ function clearPrintMessage() {
    6. FIREBASE CREDIT CHECK
 ================================== */
 
-async function checkFirebaseCredits(requiredCredits = 1) {
+async function checkFirebaseCredits(requiredCredits) {
+
+    if (
+        !Number.isInteger(requiredCredits) ||
+        requiredCredits < 1
+    ) {
+        throw new Error("Invalid required credit amount.");
+    }
 
     const response = await fetch(
         `${API_BASE_URL}/check-credits`,
@@ -1085,13 +1094,21 @@ async function checkFirebaseCredits(requiredCredits = 1) {
             },
 
             body: JSON.stringify({
-               studentId: "STU01",
-                requiredCredits: Number(requiredCredits)
+                studentId: "STU01",
+                requiredCredits: requiredCredits
             })
         }
     );
 
-    const data = await response.json();
+    let data;
+
+    try {
+        data = await response.json();
+    } catch {
+        throw new Error(
+            "The server returned an invalid response. Check whether server.js is running."
+        );
+    }
 
     if (!response.ok || !data.success) {
         throw new Error(
@@ -1100,6 +1117,10 @@ async function checkFirebaseCredits(requiredCredits = 1) {
     }
 
     account.credits = Number(data.availableCredits);
+
+    if (!Number.isFinite(account.credits)) {
+        throw new Error("The server returned an invalid credit balance.");
+    }
 
     renderDashboard();
     renderAccount();
@@ -1325,7 +1346,7 @@ function renderAccount() {
         account.name;
 
     document.getElementById("studentId").value =
-        account.studentId;
+        "STU01";
 
     document.getElementById("rfidNumber").value =
         account.rfid;
@@ -1342,14 +1363,11 @@ document.getElementById("saveAccount").addEventListener(
         const name = document.getElementById("studentName")
             .value.trim();
 
-        const studentId = document.getElementById("studentId")
-            .value.trim();
-
-        if (!name || !studentId) {
+        if (!name) {
 
             showMessage(
                 "accountMessage",
-                "Enter a student name and student ID.",
+                "Enter a student name.",
                 "error"
             );
 
@@ -1357,10 +1375,11 @@ document.getElementById("saveAccount").addEventListener(
         }
 
         account.name = name;
-        account.studentId = studentId;
+        account.studentId = "STU01";
 
         saveData();
         renderDashboard();
+        renderAccount();
 
         showMessage(
             "accountMessage",
@@ -1660,7 +1679,13 @@ async function uploadPdfToServer(file) {
         }
     );
 
-    const data = await response.json();
+    let data;
+
+    try {
+        data = await response.json();
+    } catch {
+        throw new Error("The server returned an invalid upload response.");
+    }
 
     if (!response.ok || !data.success) {
 
@@ -1668,6 +1693,10 @@ async function uploadPdfToServer(file) {
             data.message || "PDF upload failed."
         );
 
+    }
+
+    if (!data.file || !data.file.savedName) {
+        throw new Error("The server did not return the uploaded filename.");
     }
 
     uploadedFileName = data.file.savedName;
@@ -1757,7 +1786,7 @@ document.getElementById("submitPrint").addEventListener(
                 "Pages: " + pdfPageCount + "\n" +
                 "Copies: " + copies + "\n" +
                 "Total printed pages: " + requiredCredits + "\n\n" +
-                "This test does not deduct credits.\n\n" +
+                "This test checks your credits but does NOT deduct them.\n\n" +
                 "Continue?"
             );
 
@@ -1795,7 +1824,13 @@ document.getElementById("submitPrint").addEventListener(
                 }
             );
 
-            const printResult = await printResponse.json();
+            let printResult;
+
+            try {
+                printResult = await printResponse.json();
+            } catch {
+                throw new Error("The server returned an invalid printing response.");
+            }
 
             if (
                 !printResponse.ok ||
