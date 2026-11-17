@@ -2,967 +2,1099 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAMSARA | Recycle • Earn • Print</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMSARA | Recycle • Earn • Print</title>
 
-  <style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
+<style>
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 :root {
-  --matcha: #778665;
-  --matcha-light: #e9eddf;
-  --matcha-dark: #394b35;
-  --gold: #d9b96f;
-  --gold-light: #f5ecd7;
-  --cream: #faf9f4;
-  --white: #ffffff;
-  --text: #394333;
-  --muted: #85877d;
-  --brown: #9b8064;
-  --border: #e9e5da;
-  --green: #54734e;
-  --red: #b85c50;
+    --matcha: #778665;
+    --matcha-light: #e9eddf;
+    --matcha-dark: #394b35;
+    --gold: #d9b96f;
+    --gold-light: #f5ecd7;
+    --cream: #faf9f4;
+    --white: #ffffff;
+    --text: #394333;
+    --muted: #85877d;
+    --border: #e9e5da;
+    --green: #54734e;
+    --red: #b85c50;
 }
 
 body {
-  background: var(--cream);
-  color: var(--text);
+    background: var(--cream);
+    color: var(--text);
 }
 
 button, input {
-  font: inherit;
+    font: inherit;
 }
 
 button {
-  cursor: pointer;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .app {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
+    min-height: 100vh;
 }
 
 /* SIDEBAR */
 
 .sidebar {
-  width: 245px;
-  min-width: 245px;
-  background: var(--matcha);
-  color: white;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
+    width: 245px;
+    min-width: 245px;
+    background: var(--matcha);
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .brand {
-  padding: 8px 10px 25px;
-  border-bottom: 1px solid rgba(255,255,255,.25);
-  margin-bottom: 30px;
+    padding: 8px 10px 25px;
+    border-bottom: 1px solid rgba(255,255,255,.25);
+    margin-bottom: 30px;
 }
 
 .brand-name {
-  color: white;
-  font-size: 27px;
-  font-weight: 600;
-  letter-spacing: 3px;
+    font-size: 27px;
+    font-weight: 600;
+    letter-spacing: 3px;
 }
 
 .brand-tagline {
-  color: #f0f0e8;
-  font-size: 10px;
-  letter-spacing: 1px;
-  margin-top: 9px;
+    color: #f0f0e8;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 9px;
 }
 
 .nav-label {
-  color: #e3e7dc;
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  padding: 0 12px;
-  margin-bottom: 13px;
+    color: #e3e7dc;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    padding: 0 12px;
+    margin-bottom: 13px;
 }
 
 .nav-button {
-  display: block;
-  width: 100%;
-  border: none;
-  background: transparent;
-  color: #ffffff;
-  text-align: left;
-  padding: 14px 13px;
-  border-radius: 9px;
-  font-size: 13px;
-  margin-bottom: 8px;
-  transition: .2s;
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: white;
+    text-align: left;
+    padding: 14px 13px;
+    border-radius: 9px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    transition: .2s;
 }
 
 .nav-button:hover,
 .nav-button.active {
-  background: var(--gold-light);
-  color: var(--matcha-dark);
+    background: var(--gold-light);
+    color: var(--matcha-dark);
 }
 
 .sidebar-bottom {
-  margin-top: auto;
-  padding: 20px 12px 0;
-  color: #edf0e7;
-  font-size: 11px;
-  line-height: 1.9;
+    margin-top: auto;
+    padding: 20px 12px 0;
+    color: #edf0e7;
+    font-size: 11px;
+    line-height: 1.9;
 }
 
-/* MAIN CONTENT */
+/* MAIN */
 
 .main {
-  flex: 1;
-  min-width: 0;
-  padding: 35px;
+    flex: 1;
+    min-width: 0;
+    padding: 35px;
 }
 
 .topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .topbar h1 {
-  color: var(--matcha-dark);
-  font-size: 27px;
-  font-weight: 600;
-  margin-bottom: 7px;
+    color: var(--matcha-dark);
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 7px;
 }
 
 .topbar p {
-  color: var(--muted);
-  font-size: 13px;
+    color: var(--muted);
+    font-size: 13px;
 }
 
 .student-chip {
-  background: var(--white);
-  border: 1px solid var(--border);
-  padding: 11px 16px;
-  border-radius: 30px;
-  color: var(--matcha-dark);
-  font-size: 12px;
-  font-weight: bold;
+    background: white;
+    border: 1px solid var(--border);
+    padding: 11px 16px;
+    border-radius: 30px;
+    color: var(--matcha-dark);
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .page {
-  display: none;
+    display: none;
 }
 
 .page.active {
-  display: block;
+    display: block;
 }
 
 .section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--matcha-dark);
-  margin-bottom: 15px;
+    font-size: 18px;
+    color: var(--matcha-dark);
+    margin-bottom: 15px;
 }
 
-/* DASHBOARD BANNER */
+/* HERO */
 
 .hero {
-  background: var(--matcha-light);
-  color: var(--matcha-dark);
-  padding: 42px;
-  border-radius: 14px;
-  margin-bottom: 30px;
+    background: var(--matcha-light);
+    color: var(--matcha-dark);
+    padding: 42px;
+    border-radius: 14px;
+    margin-bottom: 30px;
 }
 
 .hero-kicker {
-  color: var(--brown);
-  text-transform: uppercase;
-  letter-spacing: 1.7px;
-  font-size: 10px;
-  font-weight: bold;
-  margin-bottom: 15px;
+    color: var(--brown, #9b8064);
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .hero h2 {
-  font-size: clamp(28px, 3vw, 38px);
-  line-height: 1.25;
-  margin-bottom: 13px;
-  font-weight: 600;
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.25;
+    margin-bottom: 13px;
+    font-weight: 600;
 }
 
 .hero h2 span {
-  color: var(--matcha);
+    color: var(--matcha);
 }
 
 .hero p {
-  color: #687260;
-  font-size: 13px;
-  line-height: 1.8;
-  max-width: 570px;
+    color: #687260;
+    font-size: 13px;
+    line-height: 1.8;
+    max-width: 570px;
 }
 
 .hero-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 23px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 10px;
+    margin-top: 23px;
+    flex-wrap: wrap;
 }
 
 /* BUTTONS */
 
 .btn {
-  border: none;
-  padding: 12px 19px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13px;
-  transition: .2s;
+    border: none;
+    padding: 12px 19px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: .2s;
 }
 
 .btn-primary {
-  background: var(--matcha);
-  color: white;
+    background: var(--matcha);
+    color: white;
 }
 
 .btn-primary:hover {
-  background: var(--matcha-dark);
+    background: var(--matcha-dark);
 }
 
 .btn-gold {
-  background: var(--gold);
-  color: var(--matcha-dark);
+    background: var(--gold);
+    color: var(--matcha-dark);
 }
 
 .btn-gold:hover {
-  background: #cba957;
+    background: #cba957;
 }
 
 .btn-light {
-  background: white;
-  color: var(--matcha-dark);
-  border: 1px solid var(--border);
-}
-
-.btn-light:hover {
-  background: var(--gold-light);
+    background: white;
+    color: var(--matcha-dark);
+    border: 1px solid var(--border);
 }
 
 .btn-secondary {
-  background: var(--matcha-light);
-  color: var(--matcha-dark);
+    background: var(--matcha-light);
+    color: var(--matcha-dark);
 }
 
-.btn:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
-
-/* PRINTING STEPS */
+/* STEPS */
 
 .steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 13px;
-  margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 13px;
+    margin-bottom: 30px;
 }
 
 .step-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  padding: 19px 15px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 19px 15px;
 }
 
 .step-number {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--gold-light);
-  color: var(--brown);
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--gold-light);
+    color: #9b8064;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 13px;
 }
 
 .step-card h3 {
-  color: var(--matcha-dark);
-  font-size: 13px;
-  margin-bottom: 7px;
+    color: var(--matcha-dark);
+    font-size: 13px;
+    margin-bottom: 7px;
 }
 
 .step-card p {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.7;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
 }
 
 /* DASHBOARD CARDS */
 
 .cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
 }
 
 .card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 23px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 23px;
 }
 
 .gold-card {
-  background: var(--gold-light);
-  border-color: #e9d9b2;
+    background: var(--gold-light);
+    border-color: #e9d9b2;
 }
 
 .card-label {
-  color: var(--muted);
-  font-size: 12px;
-  margin-bottom: 12px;
-}
-
-.gold-card .card-label,
-.gold-card .card-value,
-.gold-card .card-note {
-  color: var(--matcha-dark);
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 12px;
 }
 
 .card-value {
-  color: var(--matcha-dark);
-  font-size: 30px;
-  font-weight: 600;
+    color: var(--matcha-dark);
+    font-size: 30px;
+    font-weight: 600;
 }
 
 .card-note {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 8px;
-  line-height: 1.5;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.gold-card .card-label,
+.gold-card .card-note {
+    color: var(--matcha-dark);
 }
 
 /* PANELS */
 
 .panel {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
 }
 
 .panel h3 {
-  font-size: 16px;
-  color: var(--matcha-dark);
-  margin-bottom: 8px;
+    font-size: 16px;
+    color: var(--matcha-dark);
+    margin-bottom: 8px;
 }
 
 .panel-description {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.7;
-  margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 18px;
 }
 
 .shortcut {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 19px;
-}
-
-.shortcut h3 {
-  margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 19px;
 }
 
 .shortcut p {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 /* FORMS */
 
 .form-group {
-  margin-bottom: 17px;
+    margin-bottom: 17px;
 }
 
 .form-group label {
-  display: block;
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: var(--matcha-dark);
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--matcha-dark);
 }
 
 input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: white;
-  font-size: 13px;
-  color: var(--text);
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-size: 13px;
+    color: var(--text);
 }
 
 input:focus {
-  outline: 2px solid rgba(168,184,138,.3);
-  border-color: var(--matcha);
+    outline: 2px solid rgba(168,184,138,.3);
+    border-color: var(--matcha);
 }
 
 input[type="file"] {
-  background: var(--cream);
+    background: var(--cream);
 }
 
 .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .info-box {
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 16px;
-  margin: 16px 0;
-  font-size: 12px;
-  line-height: 1.9;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 16px;
+    margin: 16px 0;
+    font-size: 12px;
+    line-height: 1.9;
 }
 
+/* PDF PREVIEW */
+
 .preview-box {
-  display: none;
-  border: 1px solid var(--border);
-  background: var(--cream);
-  padding: 18px;
-  border-radius: 10px;
-  margin: 18px 0;
+    display: none;
+    border: 1px solid var(--border);
+    background: var(--cream);
+    padding: 18px;
+    border-radius: 10px;
+    margin: 18px 0;
 }
 
 .preview-box.visible {
-  display: block;
+    display: block;
 }
 
 .preview-box h4 {
-  margin-bottom: 10px;
-  color: var(--matcha-dark);
+    margin-bottom: 10px;
+    color: var(--matcha-dark);
 }
 
 .preview-box canvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  max-height: 500px;
-  margin: 15px auto;
-  border: 1px solid var(--border);
-  background: white;
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    margin: 15px auto;
+    border: 1px solid var(--border);
+    background: white;
 }
 
 .preview-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    font-size: 12px;
 }
 
+/* STATUS */
+
 .status-message {
-  display: none;
-  padding: 13px;
-  border-radius: 8px;
-  margin: 15px 0;
-  font-size: 12px;
-  line-height: 1.6;
+    display: none;
+    padding: 13px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 .status-message.visible {
-  display: block;
+    display: block;
 }
 
 .status-message.success {
-  background: #edf3e8;
-  color: #42623e;
+    background: #edf3e8;
+    color: #42623e;
 }
 
 .status-message.error {
-  background: #f9eae7;
-  color: #a12622;
+    background: #f9eae7;
+    color: #a12622;
 }
 
 .status-message.info {
-  background: #edf1e9;
-  color: var(--matcha-dark);
+    background: #edf1e9;
+    color: var(--matcha-dark);
 }
 
-/* HISTORY TABLE */
+/* HISTORY */
 
 .table-wrap {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
 }
 
 th {
-  text-align: left;
-  padding: 13px 10px;
-  background: var(--cream);
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .5px;
+    text-align: left;
+    padding: 13px 10px;
+    background: var(--cream);
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
 }
 
 td {
-  padding: 13px 10px;
-  border-bottom: 1px solid var(--border);
+    padding: 13px 10px;
+    border-bottom: 1px solid var(--border);
 }
 
 .positive {
-  color: var(--green);
-  font-weight: bold;
+    color: var(--green);
+    font-weight: bold;
 }
 
 .negative {
-  color: var(--red);
-  font-weight: bold;
+    color: var(--red);
+    font-weight: bold;
 }
 
 .pill {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: bold;
-  background: var(--matcha-light);
-  color: var(--matcha-dark);
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    background: var(--matcha-light);
+    color: var(--matcha-dark);
 }
 
 .empty-state {
-  padding: 28px 12px;
-  text-align: center;
-  color: var(--muted);
+    padding: 28px 12px;
+    text-align: center;
+    color: var(--muted);
 }
 
 .demo-warning {
-  background: var(--gold-light);
-  border: 1px solid #e9d9b2;
-  color: #78633d;
-  padding: 13px 15px;
-  border-radius: 9px;
-  font-size: 11px;
-  line-height: 1.7;
-  margin-bottom: 18px;
+    background: var(--gold-light);
+    border: 1px solid #e9d9b2;
+    color: #78633d;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-size: 11px;
+    line-height: 1.7;
+    margin-bottom: 18px;
 }
 
 .footer {
-  text-align: center;
-  color: var(--muted);
-  font-size: 10px;
-  padding: 22px 0;
-  line-height: 1.8;
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    padding: 22px 0;
+    line-height: 1.8;
 }
 
-/* RESPONSIVE */
+/* MOBILE */
 
 @media (max-width: 1000px) {
-  .steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+    .steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-  .cards {
-    grid-template-columns: 1fr 1fr;
-  }
+    .cards {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 700px) {
-  .app {
-    display: block;
-  }
+    .app {
+        display: block;
+    }
 
-  .sidebar {
-    width: 100%;
-    min-width: 0;
-    padding: 15px;
-  }
+    .sidebar {
+        width: 100%;
+        min-width: 0;
+        padding: 15px;
+    }
 
-  .brand {
-    padding-bottom: 14px;
-    margin-bottom: 15px;
-  }
+    .brand {
+        padding-bottom: 14px;
+        margin-bottom: 15px;
+    }
 
-  .brand-name {
-    font-size: 25px;
-  }
+    .nav-label,
+    .sidebar-bottom {
+        display: none;
+    }
 
-  .nav-label,
-  .sidebar-bottom {
-    display: none;
-  }
+    .nav-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+    }
 
-  .nav-menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-  }
+    .nav-button {
+        margin: 0;
+        padding: 11px;
+        font-size: 12px;
+    }
 
-  .nav-button {
-    margin: 0;
-    padding: 11px;
-    font-size: 12px;
-  }
+    .main {
+        padding: 18px;
+    }
 
-  .main {
-    padding: 18px;
-  }
+    .hero {
+        padding: 25px;
+    }
 
-  .hero {
-    padding: 25px;
-  }
+    .cards,
+    .steps,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
 
-  .cards,
-  .steps,
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+    .shortcut {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 
-  .shortcut {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .card-value {
-    font-size: 25px;
-  }
+    .card-value {
+        font-size: 25px;
+    }
 }
-
-  </style>
+</style>
 </head>
 
 <body>
+
 <div class="app">
 
-  <aside class="sidebar">
+<aside class="sidebar">
+
     <div class="brand">
-      <div class="brand-name">SAMSARA</div>
-      <div class="brand-tagline">Recycle • Earn • Print</div>
+        <div class="brand-name">SAMSARA</div>
+        <div class="brand-tagline">Recycle • Earn • Print</div>
     </div>
 
     <div class="nav-label">MAIN MENU</div>
 
     <nav class="nav-menu">
-      <button class="nav-button active" data-page="dashboard">Dashboard</button>
-      <button class="nav-button" data-page="print">Start Printing</button>
-      <button class="nav-button" data-page="history">Transaction History</button>
-      <button class="nav-button" data-page="account">My Account</button>
+        <button class="nav-button active" data-page="dashboard">Dashboard</button>
+        <button class="nav-button" data-page="print">Start Printing</button>
+        <button class="nav-button" data-page="history">Transaction History</button>
+        <button class="nav-button" data-page="account">My Account</button>
     </nav>
 
     <div class="sidebar-bottom">
-      <strong>SAMSARA</strong><br>
-      Recycle responsibly.<br>
-      Earn credits. Print smarter.
+        <strong>SAMSARA</strong><br>
+        Recycle responsibly.<br>
+        Earn credits. Print smarter.
     </div>
-  </aside>
 
-  <main class="main">
+</aside>
 
-    <header class="topbar">
-      <div>
+<main class="main">
+
+<header class="topbar">
+    <div>
         <h1 id="pageTitle">Dashboard</h1>
         <p id="pageSubtitle">A more sustainable school starts with you.</p>
-      </div>
-      <div class="student-chip">
-        Student ID: <span id="studentIdDisplay">STU-001</span>
-      </div>
-    </header>
+    </div>
 
-    <!-- DASHBOARD -->
-    <section class="page active" id="dashboard">
+    <div class="student-chip">
+        Student ID: <span id="studentIdDisplay">STU01</span>
+    </div>
+</header>
 
-      <div class="hero">
+<!-- DASHBOARD -->
+
+<section class="page active" id="dashboard">
+
+    <div class="hero">
         <div class="hero-kicker">A More Sustainable School</div>
-        <h2>Recycle Today,<br><span>Print Tomorrow.</span></h2>
+
+        <h2>
+            Recycle Today,<br>
+            <span>Print Tomorrow.</span>
+        </h2>
+
         <p>
-          SAMSARA rewards responsible recycling with printing credits for school needs.
-          Turn recyclable materials into useful credits and help create a cleaner campus.
+            SAMSARA rewards responsible recycling with printing credits
+            for school needs. Turn recyclable materials into useful
+            credits and help create a cleaner campus.
         </p>
+
         <div class="hero-buttons">
-          <button class="btn btn-gold" data-goto="print">Start Printing</button>
-          <button class="btn btn-light" data-goto="history">View Transactions</button>
+            <button class="btn btn-gold" data-goto="print">Start Printing</button>
+            <button class="btn btn-light" data-goto="history">View Transactions</button>
         </div>
-      </div>
+    </div>
 
-      <h2 class="section-title">How to Use SAMSARA</h2>
+    <h2 class="section-title">How to Use SAMSARA</h2>
 
-      <div class="steps">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Tap Your RFID</h3>
-          <p>Tap your registered RFID card at the printing station first.</p>
-        </div>
+    <div class="steps">
 
         <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Click Start Printing</h3>
-          <p>Open the printing page to begin your print request.</p>
+            <div class="step-number">1</div>
+            <h3>Tap Your RFID</h3>
+            <p>Tap your registered RFID card at the printing station first.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Upload Your File</h3>
-          <p>Upload your PDF document and preview it before printing.</p>
+            <div class="step-number">2</div>
+            <h3>Click Start Printing</h3>
+            <p>Open the printing page to begin your print request.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-number">4</div>
-          <h3>Print Your Document</h3>
-          <p>Check your required credits and print if your balance is sufficient.</p>
+            <div class="step-number">3</div>
+            <h3>Upload Your File</h3>
+            <p>Upload your PDF document and preview it before printing.</p>
         </div>
-      </div>
 
-      <h2 class="section-title">Your Overview</h2>
+        <div class="step-card">
+            <div class="step-number">4</div>
+            <h3>Print Your Document</h3>
+            <p>Check your required credits and submit your print request.</p>
+        </div>
 
-      <div class="cards">
+    </div>
+
+    <h2 class="section-title">Your Overview</h2>
+
+    <div class="cards">
+
         <div class="card gold-card">
-          <div class="card-label">Available Printing Credits</div>
-          <div class="card-value" id="dashboardCredits">20</div>
-          <div class="card-note">1 credit per page per copy</div>
+            <div class="card-label">Available Printing Credits</div>
+            <div class="card-value" id="dashboardCredits">20</div>
+            <div class="card-note">1 credit per page per copy</div>
         </div>
 
         <div class="card">
-          <div class="card-label">Pages Printed</div>
-          <div class="card-value" id="dashboardPrinted">0</div>
-          <div class="card-note">Total pages in recorded demo transactions</div>
+            <div class="card-label">Pages Printed</div>
+            <div class="card-value" id="dashboardPrinted">0</div>
+            <div class="card-note">Total pages in recorded transactions</div>
         </div>
 
         <div class="card">
-          <div class="card-label">Recycling Transactions</div>
-          <div class="card-value" id="dashboardRecycling">0</div>
-          <div class="card-note">Recycling station connection is not yet active</div>
+            <div class="card-label">Recycling Transactions</div>
+            <div class="card-value" id="dashboardRecycling">0</div>
+            <div class="card-note">Recycling station connection is not yet active</div>
         </div>
-      </div>
 
-      <div class="panel">
+    </div>
+
+    <div class="panel">
         <div class="shortcut">
-          <div>
-            <h3>Ready to print?</h3>
-            <p>Upload a PDF, review your pages, and check the credits needed.</p>
-          </div>
-          <button class="btn btn-primary" data-goto="print">Start Printing</button>
+            <div>
+                <h3>Ready to print?</h3>
+                <p>Upload a PDF, review your pages, and check the credits needed.</p>
+            </div>
+
+            <button class="btn btn-primary" data-goto="print">Start Printing</button>
         </div>
-      </div>
+    </div>
 
-      <div class="demo-warning">
-        <strong>Prototype notice:</strong> This version uses sample account data saved in your browser. Actual RFID reading, shared credit balances between machines, and physical printing require backend and hardware integration. HI,GUYS.
-      </div>
-    </section>
+    <div class="demo-warning">
+        <strong>Prototype notice:</strong>
+        Physical printing and PDF uploads require the SAMSARA backend
+        to be running on the same computer during this local test.
+        This test version does not deduct credits.
+    </div>
 
-    <!-- PRINTING PAGE -->
-    <section class="page" id="print">
+</section>
 
-      <div class="panel">
+<!-- PRINTING PAGE -->
+
+<section class="page" id="print">
+
+    <div class="panel">
+
         <h3>Print a Document</h3>
+
         <p class="panel-description">
-          Upload your PDF and review the credit cost before submitting your request.
+            Upload your PDF and review the credit cost before submitting
+            your request.
         </p>
 
         <div class="form-group">
-          <label for="pdfFile">Select PDF File</label>
-          <input type="file" id="pdfFile" accept="application/pdf,.pdf">
+            <label for="pdfFile">Select PDF File</label>
+            <input type="file" id="pdfFile" accept="application/pdf,.pdf">
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="copies">Number of Copies</label>
-            <input type="number" id="copies" min="1" max="100" value="1">
-          </div>
 
-          <div class="form-group">
-            <label for="printMode">Printing Mode</label>
-            <input id="printMode" type="text" value="Black and White" readonly>
-          </div>
+            <div class="form-group">
+                <label for="copies">Number of Copies</label>
+                <input type="number" id="copies" min="1" max="2" value="1">
+            </div>
+
+            <div class="form-group">
+                <label for="printMode">Printing Mode</label>
+                <input id="printMode" type="text" value="Black and White" readonly>
+            </div>
+
         </div>
 
         <div class="info-box">
-          <strong>Credit rate:</strong> 1 credit per page per copy.<br>
-          <strong>Example:</strong> 5 pages × 2 copies = 10 credits.
+            <strong>Credit rate:</strong> 1 credit per page per copy.<br>
+            <strong>Example:</strong> 5 pages × 2 copies = 10 credits.<br>
+            <strong>Test limit:</strong> Maximum of 2 copies.
         </div>
 
-        <button class="btn btn-primary" id="previewButton">Upload and Preview PDF</button>
+        <button class="btn btn-primary" id="previewButton">
+            Upload and Preview PDF
+        </button>
 
         <div class="preview-box" id="previewBox">
-          <h4>Document Preview</h4>
-          <p id="pdfInfo" class="panel-description"></p>
-          <canvas id="pdfCanvas"></canvas>
 
-          <div class="preview-controls">
-            <button class="btn btn-secondary" id="previousPage">Previous</button>
-            <span id="pageIndicator">Page 1 of 1</span>
-            <button class="btn btn-secondary" id="nextPage">Next</button>
-          </div>
+            <h4>Document Preview</h4>
+
+            <p id="pdfInfo" class="panel-description"></p>
+
+            <canvas id="pdfCanvas"></canvas>
+
+            <div class="preview-controls">
+                <button class="btn btn-secondary" id="previousPage" disabled>
+                    Previous
+                </button>
+
+                <span id="pageIndicator">Page 1 of 1</span>
+
+                <button class="btn btn-secondary" id="nextPage" disabled>
+                    Next
+                </button>
+            </div>
+
         </div>
 
         <div class="info-box" id="costBox" style="display:none;">
-          <strong>Pages in document:</strong> <span id="pageCount">0</span><br>
-          <strong>Copies:</strong> <span id="copyCount">1</span><br>
-          <strong>Total pages:</strong> <span id="totalPageCount">0</span><br>
-          <strong>Required credits:</strong> <span id="requiredCredits">0</span><br>
-          <strong>Available credits:</strong> <span id="availableCredits">0</span><br>
-          <strong>Remaining credits:</strong> <span id="remainingCredits">0</span>
+
+            <strong>Pages in document:</strong>
+            <span id="pageCount">0</span><br>
+
+            <strong>Copies:</strong>
+            <span id="copyCount">1</span><br>
+
+            <strong>Total pages:</strong>
+            <span id="totalPageCount">0</span><br>
+
+            <strong>Required credits:</strong>
+            <span id="requiredCredits">0</span><br>
+
+            <strong>Available credits:</strong>
+            <span id="availableCredits">0</span><br>
+
+            <strong>Remaining credits:</strong>
+            <span id="remainingCredits">0</span>
+
         </div>
 
         <div class="status-message" id="printMessage"></div>
-        <button class="btn btn-gold" id="submitPrint" disabled>Print Document</button>
-      </div>
-    </section>
 
-    <!-- TRANSACTION HISTORY -->
-    <section class="page" id="history">
-      <div class="panel">
+        <button class="btn btn-gold" id="submitPrint" disabled>
+            Print Document
+        </button>
+
+    </div>
+
+</section>
+
+<!-- TRANSACTION HISTORY -->
+
+<section class="page" id="history">
+
+    <div class="panel">
+
         <h3>Transaction History</h3>
-        <p class="panel-description">Review printing transactions saved in this browser's demo account.</p>
+
+        <p class="panel-description">
+            Review recorded transactions saved in this browser.
+        </p>
 
         <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Transaction</th>
-                <th>Details</th>
-                <th>Credits</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
 
-    <!-- ACCOUNT -->
-    <section class="page" id="account">
-      <div class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Transaction</th>
+                        <th>Details</th>
+                        <th>Credits</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyBody"></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ACCOUNT -->
+
+<section class="page" id="account">
+
+    <div class="panel">
+
         <h3>My Account</h3>
-        <p class="panel-description">View your sample student account details.</p>
+
+        <p class="panel-description">
+            View your student account details.
+        </p>
 
         <div class="form-group">
-          <label for="studentName">Student Name</label>
-          <input type="text" id="studentName" value="Sample Student">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" value="Sample Student">
         </div>
 
         <div class="form-group">
-          <label for="studentId">Student ID</label>
-          <input type="text" id="studentId" value="STU-001">
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" value="STU01">
         </div>
 
         <div class="form-group">
-          <label for="rfidNumber">RFID Card ID</label>
-          <input type="text" id="rfidNumber" value="DEMO-RFID-001" readonly>
+            <label for="rfidNumber">RFID Card ID</label>
+            <input type="text" id="rfidNumber" value="DEMO-RFID-001" readonly>
         </div>
 
         <div class="form-group">
-          <label for="accountCredits">Available Printing Credits</label>
-          <input type="text" id="accountCredits" value="20" readonly>
+            <label for="accountCredits">Available Printing Credits</label>
+            <input type="text" id="accountCredits" value="20" readonly>
         </div>
 
-        <button class="btn btn-primary" id="saveAccount">Save Demo Profile</button>
+        <button class="btn btn-primary" id="saveAccount">
+            Save Demo Profile
+        </button>
+
         <div class="status-message" id="accountMessage"></div>
-      </div>
-    </section>
 
-    <footer class="footer">
-      SAMSARA — Recycle • Earn • Print<br>
-      Student Printing-Credit System Prototype
-    </footer>
-  </main>
+    </div>
+
+</section>
+
+<footer class="footer">
+    SAMSARA — Recycle • Earn • Print<br>
+    Student Printing-Credit System Prototype
+</footer>
+
+</main>
 </div>
 
 <script>
-  /*
-    DEMO ONLY:
-    This frontend does not yet connect to physical RFID hardware,
-    a shared backend, or the physical printer. 
-  */
 
-  if (window.pdfjsLib) {
+/* ==================================
+   1. PDF.JS CONFIGURATION
+================================== */
+
+if (window.pdfjsLib) {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  }
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
 
-  const DEFAULT_ACCOUNT = {
+/* ==================================
+   2. SERVER CONFIGURATION
+================================== */
+
+// Local testing only.
+// This address refers to the computer running Node.js.
+
+const API_BASE_URL = "http://127.0.0.1:3000";
+
+/* ==================================
+   3. DEFAULT ACCOUNT
+================================== */
+
+const DEFAULT_ACCOUNT = {
     name: "Sample Student",
     studentId: "STU01",
     rfid: "DEMO-RFID-001",
     credits: 20
-  };
-  
+};
 
-  function loadAccount() {
+function loadAccount() {
     try {
-      const saved = JSON.parse(localStorage.getItem("samsaraAccount"));
-      return saved ? { ...DEFAULT_ACCOUNT, ...saved } : { ...DEFAULT_ACCOUNT };
-    } catch {
-      return { ...DEFAULT_ACCOUNT };
-    }
-  }
+        const saved = JSON.parse(
+            localStorage.getItem("samsaraAccount")
+        );
 
-  function loadTransactions() {
+        return saved
+            ? { ...DEFAULT_ACCOUNT, ...saved }
+            : { ...DEFAULT_ACCOUNT };
+
+    } catch {
+        return { ...DEFAULT_ACCOUNT };
+    }
+}
+
+function loadTransactions() {
     try {
-      const saved = JSON.parse(localStorage.getItem("samsaraTransactions"));
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
+        const saved = JSON.parse(
+            localStorage.getItem("samsaraTransactions")
+        );
 
-  let account = loadAccount();
-  let transactions = loadTransactions();
-  let pdfDocument = null;
-  let currentPdfPage = 1;
-  let pdfPageCount = 0;
-  let currentFileName = "";
-  let uploadedFileName = "";
-  
-  const API_BASE_URL = "http://127.0.0.1:3000";
+        return Array.isArray(saved) ? saved : [];
+
+    } catch {
+        return [];
+    }
+}
+
+let account = loadAccount();
+let transactions = loadTransactions();
+
+let pdfDocument = null;
+let pdfPageCount = 0;
+let currentPdfPage = 1;
+let uploadedFileName = "";
+
+/* ==================================
+   4. SAVE DATA
+================================== */
+
+function saveData() {
+    localStorage.setItem(
+        "samsaraAccount",
+        JSON.stringify(account)
+    );
+
+    localStorage.setItem(
+        "samsaraTransactions",
+        JSON.stringify(transactions)
+    );
+}
+
+/* ==================================
+   5. DISPLAY MESSAGES
+================================== */
+
+function showMessage(id, message, type) {
+    const element = document.getElementById(id);
+
+    element.textContent = message;
+    element.className = "status-message visible " + type;
+}
+
+function clearPrintMessage() {
+    const element = document.getElementById("printMessage");
+
+    element.textContent = "";
+    element.className = "status-message";
+}
+
+/* ==================================
+   6. FIREBASE CREDIT CHECK
+================================== */
 
 async function checkFirebaseCredits(requiredCredits = 1) {
-    const response = await fetch(`${API_BASE_URL}/check-credits`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            studentId: account.studentId,
-            requiredCredits: Number(requiredCredits)
-        })
-    });
+
+    const response = await fetch(
+        `${API_BASE_URL}/check-credits`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                studentId: account.studentId,
+                requiredCredits: Number(requiredCredits)
+            })
+        }
+    );
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to check credits.");
+        throw new Error(
+            data.message || "Unable to check credits."
+        );
     }
 
     account.credits = Number(data.availableCredits);
@@ -974,8 +1106,14 @@ async function checkFirebaseCredits(requiredCredits = 1) {
     return data;
 }
 
+/* ==================================
+   7. LOAD FIREBASE BALANCE
+================================== */
+
 async function loadFirebaseBalance() {
+
     try {
+
         await checkFirebaseCredits(1);
 
         showMessage(
@@ -986,387 +1124,728 @@ async function loadFirebaseBalance() {
         );
 
     } catch (error) {
+
         showMessage(
             "printMessage",
-            "Could not retrieve Firebase credits: " + error.message,
+            "Could not retrieve Firebase credits: " +
+            error.message,
             "error"
         );
+
     }
 }
-}
 
-  const pageTitles = {
-    dashboard: ["Dashboard", "A more sustainable school starts with you."],
-    print: ["Start Printing", "Upload and preview your document before printing."],
-    history: ["Transaction History", "Review your recorded transactions."],
-    account: ["My Account", "View your sample student account."]
-  };
+/* ==================================
+   8. PAGE NAVIGATION
+================================== */
 
-  function saveData() {
-    localStorage.setItem("samsaraAccount", JSON.stringify(account));
-    localStorage.setItem("samsaraTransactions", JSON.stringify(transactions));
-  }
+const pageTitles = {
 
-  function navigateTo(pageName) {
+    dashboard: [
+        "Dashboard",
+        "A more sustainable school starts with you."
+    ],
+
+    print: [
+        "Start Printing",
+        "Upload and preview your document before printing."
+    ],
+
+    history: [
+        "Transaction History",
+        "Review your recorded transactions."
+    ],
+
+    account: [
+        "My Account",
+        "View your student account."
+    ]
+
+};
+
+function navigateTo(pageName) {
+
     document.querySelectorAll(".page").forEach(page => {
-      page.classList.toggle("active", page.id === pageName);
+        page.classList.toggle(
+            "active",
+            page.id === pageName
+        );
     });
 
     document.querySelectorAll(".nav-button").forEach(button => {
-      button.classList.toggle("active", button.dataset.page === pageName);
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageName
+        );
     });
 
     const title = pageTitles[pageName] || pageTitles.dashboard;
+
     document.getElementById("pageTitle").textContent = title[0];
+
     document.getElementById("pageSubtitle").textContent = title[1];
 
-    if (pageName === "history") renderHistory();
-    if (pageName === "account") renderAccount();
-    if (pageName === "dashboard") renderDashboard();
-  }
+    if (pageName === "history") {
+        renderHistory();
+    }
 
-  document.querySelectorAll("[data-page]").forEach(button => {
-    button.addEventListener("click", () => navigateTo(button.dataset.page));
-  });
+    if (pageName === "account") {
+        renderAccount();
+    }
 
-  document.querySelectorAll("[data-goto]").forEach(button => {
-    button.addEventListener("click", () => navigateTo(button.dataset.goto));
-  });
+    if (pageName === "dashboard") {
+        renderDashboard();
+    }
 
-  function renderDashboard() {
-    document.getElementById("studentIdDisplay").textContent = account.studentId;
-    document.getElementById("dashboardCredits").textContent = account.credits;
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+
+    button.addEventListener("click", () => {
+        navigateTo(button.dataset.page);
+    });
+
+});
+
+document.querySelectorAll("[data-goto]").forEach(button => {
+
+    button.addEventListener("click", () => {
+        navigateTo(button.dataset.goto);
+    });
+
+});
+
+/* ==================================
+   9. DASHBOARD
+================================== */
+
+function renderDashboard() {
+
+    document.getElementById("studentIdDisplay").textContent =
+        account.studentId;
+
+    document.getElementById("dashboardCredits").textContent =
+        account.credits;
 
     const printed = transactions
-      .filter(t => t.type === "Printing")
-      .reduce((sum, t) => sum + (Number(t.pages) || 0), 0);
+        .filter(t => t.type === "Printing")
+        .reduce(
+            (sum, t) => sum + (Number(t.pages) || 0),
+            0
+        );
 
-    const recycling = transactions.filter(t => t.type === "Recycling").length;
+    const recycling = transactions.filter(
+        t => t.type === "Recycling"
+    ).length;
 
-    document.getElementById("dashboardPrinted").textContent = printed;
-    document.getElementById("dashboardRecycling").textContent = recycling;
-  }
+    document.getElementById("dashboardPrinted").textContent =
+        printed;
 
-  function renderHistory() {
+    document.getElementById("dashboardRecycling").textContent =
+        recycling;
+
+}
+
+/* ==================================
+   10. TRANSACTION HISTORY
+================================== */
+
+function renderHistory() {
+
     const tbody = document.getElementById("historyBody");
+
     tbody.innerHTML = "";
 
     if (transactions.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="5" class="empty-state">No transactions recorded yet.</td></tr>';
-      return;
+
+        tbody.innerHTML =
+            '<tr><td colspan="5" class="empty-state">' +
+            'No transactions recorded yet.' +
+            '</td></tr>';
+
+        return;
     }
 
     [...transactions].reverse().forEach(transaction => {
-      const row = document.createElement("tr");
-      const values = [
-        transaction.date,
-        transaction.type,
-        transaction.details,
-        (transaction.type === "Printing" ? "-" : "+") + transaction.credits,
-        transaction.status || "Demo Recorded"
-      ];
 
-      values.forEach((value, index) => {
-        const cell = document.createElement("td");
-        cell.textContent = value;
+        const row = document.createElement("tr");
 
-        if (index === 3) {
-          cell.className = transaction.type === "Printing" ? "negative" : "positive";
-        }
+        const values = [
+            transaction.date,
+            transaction.type,
+            transaction.details,
+            (transaction.type === "Printing" ? "-" : "+") +
+                transaction.credits,
+            transaction.status || "Recorded"
+        ];
 
-        if (index === 4) {
-          const pill = document.createElement("span");
-          pill.className = "pill";
-          pill.textContent = value;
-          cell.textContent = "";
-          cell.appendChild(pill);
-        }
+        values.forEach((value, index) => {
 
-        row.appendChild(cell);
-      });
+            const cell = document.createElement("td");
 
-      tbody.appendChild(row);
+            cell.textContent = value;
+
+            if (index === 3) {
+                cell.className =
+                    transaction.type === "Printing"
+                        ? "negative"
+                        : "positive";
+            }
+
+            if (index === 4) {
+
+                const pill = document.createElement("span");
+
+                pill.className = "pill";
+                pill.textContent = value;
+
+                cell.textContent = "";
+                cell.appendChild(pill);
+            }
+
+            row.appendChild(cell);
+
+        });
+
+        tbody.appendChild(row);
+
     });
-  }
 
-  function renderAccount() {
-    document.getElementById("studentName").value = account.name;
-    document.getElementById("studentId").value = account.studentId;
-    document.getElementById("rfidNumber").value = account.rfid;
-    document.getElementById("accountCredits").value = account.credits;
-  }
+}
 
-  function showMessage(id, message, type) {
-    const element = document.getElementById(id);
-    element.textContent = message;
-    element.className = "status-message visible " + type;
-  }
+/* ==================================
+   11. ACCOUNT
+================================== */
 
-  function clearPrintMessage() {
-    const element = document.getElementById("printMessage");
-    element.textContent = "";
-    element.className = "status-message";
-  }
+function renderAccount() {
 
-  document.getElementById("saveAccount").addEventListener("click", () => {
-    const name = document.getElementById("studentName").value.trim();
-    const studentId = document.getElementById("studentId").value.trim();
+    document.getElementById("studentName").value =
+        account.name;
 
-    if (!name || !studentId) {
-      showMessage("accountMessage", "Enter a student name and student ID.", "error");
-      return;
+    document.getElementById("studentId").value =
+        account.studentId;
+
+    document.getElementById("rfidNumber").value =
+        account.rfid;
+
+    document.getElementById("accountCredits").value =
+        account.credits;
+
+}
+
+document.getElementById("saveAccount").addEventListener(
+    "click",
+    () => {
+
+        const name = document.getElementById("studentName")
+            .value.trim();
+
+        const studentId = document.getElementById("studentId")
+            .value.trim();
+
+        if (!name || !studentId) {
+
+            showMessage(
+                "accountMessage",
+                "Enter a student name and student ID.",
+                "error"
+            );
+
+            return;
+        }
+
+        account.name = name;
+        account.studentId = studentId;
+
+        saveData();
+        renderDashboard();
+
+        showMessage(
+            "accountMessage",
+            "Demo profile saved in this browser.",
+            "success"
+        );
+
     }
+);
 
-    account.name = name;
-    account.studentId = studentId;
-    saveData();
-    renderDashboard();
-    showMessage("accountMessage", "Demo profile saved in this browser.", "success");
-  });
+/* ==================================
+   12. PDF FILE SELECTION
+================================== */
 
-  document.getElementById("pdfFile").addEventListener("change", () => {
-    pdfDocument = null;
-    pdfPageCount = 0;
-    currentPdfPage = 1;
-    currentFileName = "";
-	uploadedFileName = "";
+document.getElementById("pdfFile").addEventListener(
+    "change",
+    () => {
 
-    document.getElementById("previewBox").classList.remove("visible");
-    document.getElementById("costBox").style.display = "none";
-    document.getElementById("submitPrint").disabled = true;
-    clearPrintMessage();
-  });
+        pdfDocument = null;
+        pdfPageCount = 0;
+        currentPdfPage = 1;
+        uploadedFileName = "";
 
-  document.getElementById("previewButton").addEventListener("click", async () => {
-    clearPrintMessage();
+        document.getElementById("previewBox")
+            .classList.remove("visible");
 
-    const file = document.getElementById("pdfFile").files[0];
+        document.getElementById("costBox").style.display =
+            "none";
 
-    if (!file) {
-      showMessage("printMessage", "Please select a PDF file first.", "error");
-      return;
+        document.getElementById("submitPrint").disabled =
+            true;
+
+        clearPrintMessage();
+
     }
+);
 
-    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
-      showMessage("printMessage", "Please select a valid PDF document.", "error");
-      return;
+/* ==================================
+   13. PDF PREVIEW
+================================== */
+
+document.getElementById("previewButton").addEventListener(
+    "click",
+    async () => {
+
+        clearPrintMessage();
+
+        const file = document.getElementById("pdfFile")
+            .files[0];
+
+        if (!file) {
+
+            showMessage(
+                "printMessage",
+                "Please select a PDF file first.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            file.type !== "application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+        ) {
+
+            showMessage(
+                "printMessage",
+                "Please select a valid PDF document.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!window.pdfjsLib) {
+
+            showMessage(
+                "printMessage",
+                "PDF preview could not load. Check your internet connection and reload.",
+                "error"
+            );
+
+            return;
+        }
+
+        const previewButton =
+            document.getElementById("previewButton");
+
+        previewButton.disabled = true;
+
+        try {
+
+            const buffer = await file.arrayBuffer();
+
+            pdfDocument = await pdfjsLib.getDocument({
+                data: buffer
+            }).promise;
+
+            pdfPageCount = pdfDocument.numPages;
+            currentPdfPage = 1;
+
+            document.getElementById("pdfInfo").textContent =
+                file.name + " — " + pdfPageCount + " page(s)";
+
+            document.getElementById("previewBox")
+                .classList.add("visible");
+
+            updatePageCosts();
+
+            await renderPdfPage(currentPdfPage);
+
+            document.getElementById("submitPrint").disabled =
+                false;
+
+            showMessage(
+                "printMessage",
+                "PDF preview ready. Check your pages and required credits.",
+                "success"
+            );
+
+        } catch (error) {
+
+            pdfDocument = null;
+
+            showMessage(
+                "printMessage",
+                "The PDF could not be opened: " + error.message,
+                "error"
+            );
+
+        } finally {
+
+            previewButton.disabled = false;
+
+        }
+
     }
+);
 
-    if (!window.pdfjsLib) {
-      showMessage("printMessage", "PDF preview could not load. Check your internet connection and reload the page.", "error");
-      return;
+/* ==================================
+   14. RENDER PDF PAGE
+================================== */
+
+async function renderPdfPage(pageNumber) {
+
+    if (!pdfDocument) {
+        return;
     }
-
-    try {
-      const buffer = await file.arrayBuffer();
-      pdfDocument = await pdfjsLib.getDocument({ data: buffer }).promise;
-      pdfPageCount = pdfDocument.numPages;
-      currentPdfPage = 1;
-      currentFileName = file.name;
-
-      document.getElementById("pdfInfo").textContent =
-        file.name + " — " + pdfPageCount + " page(s)";
-
-      document.getElementById("previewBox").classList.add("visible");
-      updatePageCosts();
-      await renderPdfPage(currentPdfPage);
-
-      document.getElementById("submitPrint").disabled = false;
-      showMessage("printMessage", "Document uploaded. Check the preview and required credits before printing.", "success");
-    } catch {
-      pdfDocument = null;
-      showMessage("printMessage", "The PDF could not be opened. Please try another file.", "error");
-    }
-  });
-
-  async function renderPdfPage(pageNumber) {
-    if (!pdfDocument) return;
 
     const page = await pdfDocument.getPage(pageNumber);
+
     const canvas = document.getElementById("pdfCanvas");
+
     const context = canvas.getContext("2d");
-    const viewport = page.getViewport({ scale: 1.2 });
+
+    const viewport = page.getViewport({
+        scale: 1.2
+    });
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({
-      canvasContext: context,
-      viewport
+        canvasContext: context,
+        viewport: viewport
     }).promise;
 
     document.getElementById("pageIndicator").textContent =
-      "Page " + pageNumber + " of " + pdfPageCount;
+        "Page " + pageNumber + " of " + pdfPageCount;
 
-    document.getElementById("previousPage").disabled = pageNumber <= 1;
-    document.getElementById("nextPage").disabled = pageNumber >= pdfPageCount;
-  }
+    document.getElementById("previousPage").disabled =
+        pageNumber <= 1;
 
-  document.getElementById("previousPage").addEventListener("click", async () => {
-    if (pdfDocument && currentPdfPage > 1) {
-      currentPdfPage--;
-      await renderPdfPage(currentPdfPage);
+    document.getElementById("nextPage").disabled =
+        pageNumber >= pdfPageCount;
+
+}
+
+/* ==================================
+   15. PREVIOUS PAGE
+================================== */
+
+document.getElementById("previousPage").addEventListener(
+    "click",
+    async () => {
+
+        if (pdfDocument && currentPdfPage > 1) {
+
+            currentPdfPage--;
+
+            await renderPdfPage(currentPdfPage);
+
+        }
+
     }
-  });
+);
 
-  document.getElementById("nextPage").addEventListener("click", async () => {
-    if (pdfDocument && currentPdfPage < pdfPageCount) {
-      currentPdfPage++;
-      await renderPdfPage(currentPdfPage);
+/* ==================================
+   16. NEXT PAGE
+================================== */
+
+document.getElementById("nextPage").addEventListener(
+    "click",
+    async () => {
+
+        if (
+            pdfDocument &&
+            currentPdfPage < pdfPageCount
+        ) {
+
+            currentPdfPage++;
+
+            await renderPdfPage(currentPdfPage);
+
+        }
+
     }
-  });
+);
 
-  document.getElementById("copies").addEventListener("input", () => {
-    updatePageCosts();
-    clearPrintMessage();
-  });
+/* ==================================
+   17. COPY SELECTION
+================================== */
 
-  function updatePageCosts() {
+document.getElementById("copies").addEventListener(
+    "input",
+    () => {
+
+        updatePageCosts();
+        clearPrintMessage();
+
+    }
+);
+
+/* ==================================
+   18. CREDIT CALCULATION
+================================== */
+
+function updatePageCosts() {
+
     const input = document.getElementById("copies");
+
     let copies = Number.parseInt(input.value, 10);
 
-    if (!Number.isFinite(copies) || copies < 1) copies = 1;
-    if (copies > 100) copies = 100;
+    if (!Number.isFinite(copies) || copies < 1) {
+        copies = 1;
+    }
+
+    if (copies > 2) {
+        copies = 2;
+    }
 
     input.value = copies;
 
     const totalPages = pdfPageCount * copies;
+
     const required = totalPages;
 
-    document.getElementById("pageCount").textContent = pdfPageCount;
-    document.getElementById("copyCount").textContent = copies;
-    document.getElementById("totalPageCount").textContent = totalPages;
-    document.getElementById("requiredCredits").textContent = required;
-    document.getElementById("availableCredits").textContent = account.credits;
+    document.getElementById("pageCount").textContent =
+        pdfPageCount;
+
+    document.getElementById("copyCount").textContent =
+        copies;
+
+    document.getElementById("totalPageCount").textContent =
+        totalPages;
+
+    document.getElementById("requiredCredits").textContent =
+        required;
+
+    document.getElementById("availableCredits").textContent =
+        account.credits;
+
     document.getElementById("remainingCredits").textContent =
-      Math.max(0, account.credits - required);
+        Math.max(0, account.credits - required);
 
     document.getElementById("costBox").style.display =
-      pdfPageCount > 0 ? "block" : "none";
-  }
+        pdfPageCount > 0 ? "block" : "none";
+
+}
+
+/* ==================================
+   19. UPLOAD PDF TO SERVER
+================================== */
 
 async function uploadPdfToServer(file) {
+
     const formData = new FormData();
+
     formData.append("pdf", file);
 
-    const response = await fetch(`${API_BASE_URL}/upload-pdf`, {
-        method: "POST",
-        body: formData
-    });
+    const response = await fetch(
+        `${API_BASE_URL}/upload-pdf`,
+        {
+            method: "POST",
+            body: formData
+        }
+    );
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-        throw new Error(data.message || "PDF upload failed.");
+
+        throw new Error(
+            data.message || "PDF upload failed."
+        );
+
     }
 
     uploadedFileName = data.file.savedName;
 
     return data.file.savedName;
+
 }
 
-  document.getElementById("submitPrint").addEventListener("click", async () => {
-    if (!pdfDocument || pdfPageCount < 1) {
-        showMessage("printMessage", "Upload and preview a PDF first.", "error");
-        return;
-    }
+/* ==================================
+   20. PRINT REQUEST
+================================== */
 
-    const copies = Number.parseInt(
-        document.getElementById("copies").value,
-        10
-    ) || 1;
+document.getElementById("submitPrint").addEventListener(
+    "click",
+    async () => {
 
-    const requiredCredits = pdfPageCount * copies;
+        if (!pdfDocument || pdfPageCount < 1) {
 
-    const button = document.getElementById("submitPrint");
-    button.disabled = true;
-
-    try {
-        showMessage(
-            "printMessage",
-            "Checking your actual Firebase credit balance...",
-            "info"
-        );
-
-        const result = await checkFirebaseCredits(requiredCredits);
-
-        if (!result.enoughCredits) {
             showMessage(
                 "printMessage",
-                "Insufficient credits. Available: " +
-                result.availableCredits +
-                ". Required: " + requiredCredits + ".",
+                "Upload and preview a PDF first.",
                 "error"
             );
+
             return;
         }
 
-       
-const file = document.getElementById("pdfFile").files[0];
+        const copies = Number.parseInt(
+            document.getElementById("copies").value,
+            10
+        ) || 1;
 
-if (!file) {
-    throw new Error("Please select a PDF file first.");
-}
+        if (copies < 1 || copies > 2) {
 
-showMessage(
-    "printMessage",
-    "Uploading your PDF to the SAMSARA server...",
-    "info"
-);
+            showMessage(
+                "printMessage",
+                "For this test, select 1 or 2 copies only.",
+                "error"
+            );
 
-const filename = await uploadPdfToServer(file);
+            return;
+        }
 
-showMessage(
-    "printMessage",
-    "Sending your PDF to the Epson L120...",
-    "info"
-);
+        const requiredCredits = pdfPageCount * copies;
 
-const printResponse = await fetch(`${API_BASE_URL}/print-pdf`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        filename: filename,
-        copies: copies
-    })
-});
+        const button = document.getElementById("submitPrint");
 
-const printResult = await printResponse.json();
+        button.disabled = true;
 
-if (!printResponse.ok || !printResult.success) {
-    throw new Error(printResult.message || "Printing failed.");
-}
+        try {
 
-showMessage(
-    "printMessage",
-    "Print job submitted successfully! " +
-    printResult.pageCount + " pages, " +
-    printResult.copies + " copy/copies. " +
-    "No credits were deducted during this test.",
-    "success"
-);
+            showMessage(
+                "printMessage",
+                "Checking your Firebase credit balance...",
+                "info"
+            );
 
+            const result = await checkFirebaseCredits(
+                requiredCredits
+            );
 
-    } catch (error) {
-        showMessage(
-            "printMessage",
-           "Printing process failed: " + error.message,
-            "error"
-        );
-    } finally {
-        button.disabled = false;
+            if (!result.enoughCredits) {
+
+                showMessage(
+                    "printMessage",
+                    "Insufficient credits. Available: " +
+                    result.availableCredits +
+                    ". Required: " +
+                    requiredCredits + ".",
+                    "error"
+                );
+
+                return;
+            }
+
+            const file = document.getElementById("pdfFile")
+                .files[0];
+
+            if (!file) {
+                throw new Error(
+                    "Please select a PDF file first."
+                );
+            }
+
+            const confirmation = confirm(
+                "You are about to submit a real print job.\n\n" +
+                "Pages: " + pdfPageCount + "\n" +
+                "Copies: " + copies + "\n" +
+                "Total printed pages: " + requiredCredits + "\n\n" +
+                "This test does not deduct credits.\n\n" +
+                "Continue?"
+            );
+
+            if (!confirmation) {
+                return;
+            }
+
+            showMessage(
+                "printMessage",
+                "Uploading your PDF to the SAMSARA server...",
+                "info"
+            );
+
+            const filename = await uploadPdfToServer(file);
+
+            showMessage(
+                "printMessage",
+                "Sending your PDF to the Epson L120...",
+                "info"
+            );
+
+            const printResponse = await fetch(
+                `${API_BASE_URL}/print-pdf`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        filename: filename,
+                        copies: copies
+                    })
+                }
+            );
+
+            const printResult = await printResponse.json();
+
+            if (
+                !printResponse.ok ||
+                !printResult.success
+            ) {
+
+                throw new Error(
+                    printResult.message || "Printing failed."
+                );
+
+            }
+
+            showMessage(
+                "printMessage",
+                "Print job submitted successfully! " +
+                printResult.pageCount +
+                " pages, " +
+                printResult.copies +
+                " copy/copies. " +
+                "No credits were deducted during this test.",
+                "success"
+            );
+
+        } catch (error) {
+
+            showMessage(
+                "printMessage",
+                "Printing process failed: " + error.message,
+                "error"
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+        }
+
     }
-});
-  renderDashboard();
-  renderHistory();
-  renderAccount();
-  loadFirebaseBalance();
-</script>
+);
 
+/* ==================================
+   21. INITIALIZE WEBSITE
+================================== */
+
+renderDashboard();
+renderHistory();
+renderAccount();
+updatePageCosts();
+
+loadFirebaseBalance();
+
+</script>
 
 </body>
 </html>
- 
