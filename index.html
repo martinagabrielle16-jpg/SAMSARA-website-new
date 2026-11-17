@@ -903,7 +903,7 @@ td {
   /*
     DEMO ONLY:
     This frontend does not yet connect to physical RFID hardware,
-    a shared backend, or the physical printer. Hi,guys!
+    a shared backend, or the physical printer. 
   */
 
   if (window.pdfjsLib) {
@@ -913,7 +913,7 @@ td {
 
   const DEFAULT_ACCOUNT = {
     name: "Sample Student",
-    studentId: "Dela Rosa",
+    studentId: "STU01",
     rfid: "DEMO-RFID-001",
     credits: 20
   };
@@ -943,6 +943,57 @@ td {
   let currentPdfPage = 1;
   let pdfPageCount = 0;
   let currentFileName = "";
+  let uploadedFileName = "";
+  
+  const API_BASE_URL = "http://127.0.0.1:3000";
+
+async function checkFirebaseCredits(requiredCredits = 1) {
+    const response = await fetch(`${API_BASE_URL}/check-credits`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            studentId: account.studentId,
+            requiredCredits: Number(requiredCredits)
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to check credits.");
+    }
+
+    account.credits = Number(data.availableCredits);
+
+    renderDashboard();
+    renderAccount();
+    updatePageCosts();
+
+    return data;
+}
+
+async function loadFirebaseBalance() {
+    try {
+        await checkFirebaseCredits(1);
+
+        showMessage(
+            "printMessage",
+            "Firebase connected! Your actual balance is " +
+            account.credits + " credits.",
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            "printMessage",
+            "Could not retrieve Firebase credits: " + error.message,
+            "error"
+        );
+    }
+}
+}
 
   const pageTitles = {
     dashboard: ["Dashboard", "A more sustainable school starts with you."],
@@ -1079,6 +1130,7 @@ td {
     pdfPageCount = 0;
     currentPdfPage = 1;
     currentFileName = "";
+	uploadedFileName = "";
 
     document.getElementById("previewBox").classList.remove("visible");
     document.getElementById("costBox").style.display = "none";
@@ -1194,81 +1246,126 @@ td {
       pdfPageCount > 0 ? "block" : "none";
   }
 
-  document.getElementById("submitPrint").addEventListener("click", () => {
-    if (!pdfDocument || pdfPageCount < 1) {
-      showMessage("printMessage", "Please upload and preview a PDF first.", "error");
-      return;
-    }
+async function uploadPdfToServer(file) {
+    const formData = new FormData();
+    formData.append("pdf", file);
 
-    const copies = Number.parseInt(document.getElementById("copies").value, 10) || 1;
-    const totalPages = pdfPageCount * copies;
-    const requiredCredits = totalPages;
-
-    if (requiredCredits > account.credits) {
-      showMessage(
-        "printMessage",
-        "Insufficient credits. Available: " + account.credits +
-        ". Required: " + requiredCredits + ".",
-        "error"
-      );
-      return;
-    }
-
-    const confirmed = window.confirm(
-      "Confirm this DEMO print request?\n\n" +
-      "File: " + currentFileName +
-      "\nPages per copy: " + pdfPageCount +
-      "\nCopies: " + copies +
-      "\nTotal pages: " + totalPages +
-      "\nCredits required: " + requiredCredits +
-      "\n\nThis prototype will update the demo balance only. It will not print to a physical printer."
-    );
-
-    if (!confirmed) return;
-
-    account.credits -= requiredCredits;
-
-    transactions.push({
-      date: new Date().toLocaleString(),
-      type: "Printing",
-      details: currentFileName + " (" + pdfPageCount + " pages x " + copies + " copies)",
-      pages: totalPages,
-      credits: requiredCredits,
-      status: "Demo Recorded"
+    const response = await fetch(`${API_BASE_URL}/upload-pdf`, {
+        method: "POST",
+        body: formData
     });
 
-    saveData();
-    renderDashboard();
-    updatePageCosts();
+    const data = await response.json();
 
-    showMessage(
-      "printMessage",
-      "Demo request recorded. Credits were deducted from the sample balance. No physical printing occurred.",
-      "success"
-    );
-  });
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || "PDF upload failed.");
+    }
 
-   renderDashboard();
+    uploadedFileName = data.file.savedName;
+
+    return data.file.savedName;
+}
+
+  document.getElementById("submitPrint").addEventListener("click", async () => {
+    if (!pdfDocument || pdfPageCount < 1) {
+        showMessage("printMessage", "Upload and preview a PDF first.", "error");
+        return;
+    }
+
+    const copies = Number.parseInt(
+        document.getElementById("copies").value,
+        10
+    ) || 1;
+
+    const requiredCredits = pdfPageCount * copies;
+
+    const button = document.getElementById("submitPrint");
+    button.disabled = true;
+
+    try {
+        showMessage(
+            "printMessage",
+            "Checking your actual Firebase credit balance...",
+            "info"
+        );
+
+        const result = await checkFirebaseCredits(requiredCredits);
+
+        if (!result.enoughCredits) {
+            showMessage(
+                "printMessage",
+                "Insufficient credits. Available: " +
+                result.availableCredits +
+                ". Required: " + requiredCredits + ".",
+                "error"
+            );
+            return;
+        }
+
+       
+const file = document.getElementById("pdfFile").files[0];
+
+if (!file) {
+    throw new Error("Please select a PDF file first.");
+}
+
+showMessage(
+    "printMessage",
+    "Uploading your PDF to the SAMSARA server...",
+    "info"
+);
+
+const filename = await uploadPdfToServer(file);
+
+showMessage(
+    "printMessage",
+    "Sending your PDF to the Epson L120...",
+    "info"
+);
+
+const printResponse = await fetch(`${API_BASE_URL}/print-pdf`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        filename: filename,
+        copies: copies
+    })
+});
+
+const printResult = await printResponse.json();
+
+if (!printResponse.ok || !printResult.success) {
+    throw new Error(printResult.message || "Printing failed.");
+}
+
+showMessage(
+    "printMessage",
+    "Print job submitted successfully! " +
+    printResult.pageCount + " pages, " +
+    printResult.copies + " copy/copies. " +
+    "No credits were deducted during this test.",
+    "success"
+);
+
+
+    } catch (error) {
+        showMessage(
+            "printMessage",
+           "Printing process failed: " + error.message,
+            "error"
+        );
+    } finally {
+        button.disabled = false;
+    }
+});
+  renderDashboard();
   renderHistory();
   renderAccount();
+  loadFirebaseBalance();
 </script>
 
-<script type="module">
-  import { db, doc, getDoc } from "./firebase.js";
-
-  try {
-    const testDoc = await getDoc(doc(db, "students", "STU001"));
-
-    if (testDoc.exists()) {
-      console.log("SAMSARA database connected!");
-      console.log("Student record:", testDoc.data());
-    } else {
-      console.log("Connected, but STU001 was not found.");
-    }
-  } catch (error) {
-    console.error("Database test failed:", error.code, error.message);
-  }
-</script>
 
 </body>
 </html>
